@@ -231,6 +231,7 @@ class BattleshipGame {
         this.enemyBoard = [];
         this.playerShips = [];
         this.enemyShips = [];
+        this.sunkCellClasses = { player: {}, enemy: {} };
         this.gameStarted = false;
         this.playerTurn = true;
         this.gameOver = false;
@@ -482,6 +483,7 @@ class BattleshipGame {
         );
         this.playerShips = [];
         this.enemyShips = [];
+        this.sunkCellClasses = { player: {}, enemy: {} };
     }
 
     placeShipsRandomly(board, ships) {
@@ -679,6 +681,12 @@ class BattleshipGame {
                 cell.classList.add('ship');
             } else if (cellValue === 'miss') {
                 cell.classList.add('miss');
+            } else if (cellValue === 'ship-sunk') {
+                cell.classList.add('ship', 'ship-sunk');
+                const shipClass = this.sunkCellClasses.player[`${row},${col}`];
+                if (shipClass) {
+                    cell.classList.add(shipClass);
+                }
             } else if (cellValue !== null && typeof cellValue === 'object') {
                 cell.classList.add('ship');
                 if (cellValue.class) {
@@ -699,7 +707,11 @@ class BattleshipGame {
                 cell.classList.add('miss');
             } else if (cellValue === 'ship-sunk') {
                 // Show sunk ships on enemy board with skull icon
-                cell.classList.add('ship-sunk');
+                cell.classList.add('ship', 'ship-sunk');
+                const shipClass = this.sunkCellClasses.enemy[`${row},${col}`];
+                if (shipClass) {
+                    cell.classList.add(shipClass);
+                }
             }
             // Don't show enemy ships - they should be hidden until hit
         });
@@ -713,7 +725,7 @@ class BattleshipGame {
         const cellValue = this.enemyBoard[row][col];
         const coordinate = this.getCoordinate(row, col);
         
-        if (cellValue === 'hit' || cellValue === 'miss') {
+        if (this.isAlreadyShot(cellValue)) {
             return;
         }
 
@@ -839,7 +851,7 @@ class BattleshipGame {
         for (let row = 0; row < this.boardSize; row++) {
             for (let col = 0; col < this.boardSize; col++) {
                 const cellValue = this.playerBoard[row][col];
-                if (cellValue !== 'hit' && cellValue !== 'miss') {
+                if (!this.isAlreadyShot(cellValue)) {
                     availableShots.push({ row, col });
                 }
             }
@@ -864,9 +876,7 @@ class BattleshipGame {
             const newCol = this.aiCurrentTarget.col + this.aiHuntDirection.col;
 
             const cellValue = this.playerBoard[newRow]?.[newCol];
-            if (this.isValidCell(newRow, newCol) && 
-                cellValue !== 'hit' && 
-                cellValue !== 'miss') {
+            if (this.isValidCell(newRow, newCol) && !this.isAlreadyShot(cellValue)) {
                 return { row: newRow, col: newCol };
             } else {
                 this.aiHuntDirection = null;
@@ -878,9 +888,7 @@ class BattleshipGame {
             const newCol = this.aiCurrentTarget.col + dir.col;
 
             const cellValue = this.playerBoard[newRow]?.[newCol];
-            if (this.isValidCell(newRow, newCol) && 
-                cellValue !== 'hit' && 
-                cellValue !== 'miss') {
+            if (this.isValidCell(newRow, newCol) && !this.isAlreadyShot(cellValue)) {
                 this.aiHuntDirection = dir;
                 return { row: newRow, col: newCol };
             }
@@ -906,9 +914,7 @@ class BattleshipGame {
             const newCol = this.aiCurrentTarget.col + dir.col;
 
             const cellValue = this.playerBoard[newRow]?.[newCol];
-            if (this.isValidCell(newRow, newCol) && 
-                cellValue !== 'hit' && 
-                cellValue !== 'miss') {
+            if (this.isValidCell(newRow, newCol) && !this.isAlreadyShot(cellValue)) {
                 this.aiHuntDirection = dir;
                 return;
             }
@@ -917,6 +923,10 @@ class BattleshipGame {
         this.aiTargetMode = false;
         this.aiCurrentTarget = null;
         this.aiHuntDirection = null;
+    }
+
+    isAlreadyShot(cellValue) {
+        return cellValue === 'hit' || cellValue === 'miss' || cellValue === 'ship-sunk';
     }
 
     isValidCell(row, col) {
@@ -953,23 +963,12 @@ class BattleshipGame {
             else if (shipName === 'USS Arleigh Burke') shipClass = 'destroyer';
             
             const isEnemyBoard = boardElement.id === 'enemyBoard';
+            const board = isEnemyBoard ? this.enemyBoard : this.playerBoard;
+            const sunkClasses = isEnemyBoard ? this.sunkCellClasses.enemy : this.sunkCellClasses.player;
             
             ship.positions.forEach(pos => {
-                const cell = boardElement.querySelector(
-                    `[data-row="${pos.row}"][data-col="${pos.col}"]`
-                );
-                if (cell) {
-                    // Remove hit class to hide explosion emoji
-                    cell.classList.remove('hit');
-                    // Add ship-sunk class to show skull emoji
-                    cell.classList.add('ship-sunk');
-                    if (!isEnemyBoard) {
-                        // Add ship class on player board
-                        cell.classList.add('ship', shipClass);
-                    }
-                    // Force immediate reflow
-                    void cell.offsetWidth;
-                }
+                board[pos.row][pos.col] = 'ship-sunk';
+                sunkClasses[`${pos.row},${pos.col}`] = shipClass;
             });
             
             // Force board update after revealing sunk ship
@@ -1131,7 +1130,7 @@ class BattleshipGame {
         for (let row = 0; row < this.boardSize; row++) {
             for (let col = 0; col < this.boardSize; col++) {
                 const cellValue = this.enemyBoard[row][col];
-                if (cellValue !== 'hit' && cellValue !== 'miss') {
+                if (!this.isAlreadyShot(cellValue)) {
                     availableShots.push({ row, col });
                 }
             }
