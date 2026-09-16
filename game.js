@@ -1092,9 +1092,8 @@ class BattleshipGame {
 
     startFireworks() {
         this.stopFireworks();
-        const launch = () => this.launchFirework();
-        launch();
-        this.fireworksInterval = setInterval(launch, 600);
+        this.launchFirework(true);
+        this.fireworksInterval = setInterval(() => this.launchFirework(false), 600);
     }
 
     stopFireworks() {
@@ -1104,7 +1103,7 @@ class BattleshipGame {
         }
     }
 
-    launchFirework() {
+    launchFirework(withSound) {
         const colors = ['#ffd970', '#ff6b9d', '#6bdcff', '#9dff6b', '#ffffff', '#ff9a4d'];
         const color = colors[Math.floor(Math.random() * colors.length)];
         const originX = 15 + Math.random() * 70;
@@ -1126,7 +1125,9 @@ class BattleshipGame {
             this.endgameEffects.appendChild(particle);
         }
 
-        this.soundManager.playFirework();
+        if (withSound) {
+            this.soundManager.playFirework();
+        }
     }
 
     buildDefeatScene() {
