@@ -239,24 +239,75 @@ class SoundManager {
 
     playLose() {
         if (!this.soundEnabled || !this.audioContext) return;
-        
-        const notes = [400, 350, 300, 250];
-        notes.forEach((freq, index) => {
-            setTimeout(() => {
-                const oscillator = this.audioContext.createOscillator();
-                const gainNode = this.audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(this.audioContext.destination);
-                
-                oscillator.frequency.setValueAtTime(freq, this.audioContext.currentTime);
-                gainNode.gain.setValueAtTime(0.2, this.audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
-                
-                oscillator.start(this.audioContext.currentTime);
-                oscillator.stop(this.audioContext.currentTime + 0.3);
-            }, index * 200);
+
+        const now = this.audioContext.currentTime;
+
+        // Mournful foghorn: two detuned saws sliding down
+        [110, 111.5].forEach((freq, index) => {
+            const horn = this.audioContext.createOscillator();
+            const hornGain = this.audioContext.createGain();
+            const hornFilter = this.audioContext.createBiquadFilter();
+            horn.type = 'sawtooth';
+            horn.frequency.setValueAtTime(freq, now);
+            horn.frequency.exponentialRampToValueAtTime(freq * 0.55, now + 2.4);
+            hornFilter.type = 'lowpass';
+            hornFilter.frequency.setValueAtTime(600, now);
+            hornFilter.frequency.exponentialRampToValueAtTime(220, now + 2.4);
+            hornGain.gain.setValueAtTime(0.0001, now);
+            hornGain.gain.exponentialRampToValueAtTime(0.16, now + 0.35 + index * 0.05);
+            hornGain.gain.setValueAtTime(0.16, now + 1.4);
+            hornGain.gain.exponentialRampToValueAtTime(0.01, now + 2.6);
+            horn.connect(hornFilter);
+            hornFilter.connect(hornGain);
+            hornGain.connect(this.audioContext.destination);
+            horn.start(now);
+            horn.stop(now + 2.7);
         });
+
+        // Groaning hull sinking beneath the surface
+        const groan = this.audioContext.createOscillator();
+        const groanGain = this.audioContext.createGain();
+        groan.type = 'triangle';
+        groan.frequency.setValueAtTime(90, now + 0.2);
+        groan.frequency.exponentialRampToValueAtTime(26, now + 2.8);
+        groanGain.gain.setValueAtTime(0.0001, now + 0.2);
+        groanGain.gain.exponentialRampToValueAtTime(0.3, now + 0.6);
+        groanGain.gain.exponentialRampToValueAtTime(0.01, now + 2.9);
+        groan.connect(groanGain);
+        groanGain.connect(this.audioContext.destination);
+        groan.start(now + 0.2);
+        groan.stop(now + 3.0);
+
+        // Water wash over the wreck
+        const wash = this.audioContext.createBufferSource();
+        wash.buffer = this.createNoiseBuffer(2.4, 0.8);
+        const washFilter = this.audioContext.createBiquadFilter();
+        washFilter.type = 'lowpass';
+        washFilter.frequency.setValueAtTime(900, now + 0.4);
+        washFilter.frequency.exponentialRampToValueAtTime(200, now + 2.6);
+        const washGain = this.audioContext.createGain();
+        washGain.gain.setValueAtTime(0.18, now + 0.4);
+        wash.connect(washFilter);
+        washFilter.connect(washGain);
+        washGain.connect(this.audioContext.destination);
+        wash.start(now + 0.4);
+        wash.stop(now + 2.9);
+
+        // Sinking bubbles
+        for (let i = 0; i < 6; i++) {
+            const bubbleTime = now + 0.8 + Math.random() * 1.8;
+            const bubble = this.audioContext.createOscillator();
+            const bubbleGain = this.audioContext.createGain();
+            bubble.type = 'sine';
+            bubble.frequency.setValueAtTime(240 + Math.random() * 260, bubbleTime);
+            bubble.frequency.exponentialRampToValueAtTime(90, bubbleTime + 0.12);
+            bubbleGain.gain.setValueAtTime(0.09, bubbleTime);
+            bubbleGain.gain.exponentialRampToValueAtTime(0.001, bubbleTime + 0.13);
+            bubble.connect(bubbleGain);
+            bubbleGain.connect(this.audioContext.destination);
+            bubble.start(bubbleTime);
+            bubble.stop(bubbleTime + 0.14);
+        }
     }
 
     toggle() {
@@ -801,7 +852,6 @@ class BattleshipGame {
             }
 
             if (this.checkWinCondition()) {
-                this.soundManager.playWin();
                 this.endGame(true);
                 return;
             }
@@ -875,7 +925,6 @@ class BattleshipGame {
             }
 
             if (this.checkWinCondition()) {
-                this.soundManager.playLose();
                 this.endGame(false);
                 return;
             }
@@ -1077,8 +1126,10 @@ class BattleshipGame {
         this.endgameOverlay.hidden = false;
 
         if (playerWon) {
+            this.soundManager.playWin();
             this.startFireworks();
         } else {
+            this.soundManager.playLose();
             this.buildDefeatScene();
         }
     }
