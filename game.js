@@ -285,6 +285,12 @@ class BattleshipGame {
         this.autoPlaceBtn = document.getElementById('autoPlaceBtn');
 
         this.startGameBtn.addEventListener('click', () => this.handleStartGame());
+        this.playerNameInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.handleStartGame();
+            }
+        });
         this.resetBtn.addEventListener('click', () => this.resetGame());
         this.autoPlayBtn.addEventListener('click', () => this.toggleAutoPlay());
         this.soundToggle.addEventListener('click', () => this.toggleSound());
