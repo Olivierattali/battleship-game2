@@ -1,0 +1,1103 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0a0a2a 100%);
+    color: #fff;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 3.5rem;
+    color: #e94560;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8), 0 0 20px rgba(233, 69, 96, 0.5);
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    color: #a8dadc;
+    font-size: 1.2rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Player Setup Styles */
+.player-setup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+}
+
+.setup-panel {
+    background: linear-gradient(145deg, rgba(45, 106, 79, 0.3), rgba(29, 53, 87, 0.3));
+    border: 2px solid #2d6a4f;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(45, 106, 79, 0.1);
+    max-width: 500px;
+    width: 100%;
+    backdrop-filter: blur(10px);
+}
+
+.setup-panel h2 {
+    text-align: center;
+    color: #e94560;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 10px;
+    color: #a8dadc;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #457b9d;
+    border-radius: 10px;
+    background: rgba(69, 123, 157, 0.2);
+    color: #fff;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input[type="text"]:focus {
+    outline: none;
+    border-color: #e94560;
+    box-shadow: 0 0 15px rgba(233, 69, 96, 0.3);
+}
+
+.placement-options {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px 15px;
+    border: 2px solid #457b9d;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    background: rgba(69, 123, 157, 0.1);
+}
+
+.radio-option:hover {
+    border-color: #a8dadc;
+    background: rgba(168, 218, 220, 0.1);
+}
+
+.radio-option input[type="radio"] {
+    accent-color: #e94560;
+    transform: scale(1.2);
+}
+
+.radio-option span {
+    color: #a8dadc;
+    font-weight: bold;
+}
+
+/* Manual Placement Styles */
+.manual-placement {
+    text-align: center;
+}
+
+.placement-header {
+    margin-bottom: 20px;
+}
+
+.placement-header h2 {
+    color: #e94560;
+    font-size: 2rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+#currentShipPlacement {
+    color: #a8dadc;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.placement-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.placement-board {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.placement-board .board {
+    margin: 0 auto;
+    grid-template-columns: repeat(10, 38px);
+}
+
+.placement-board .coordinates.letters {
+    margin-left: 15px;
+}
+
+.placement-instructions {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 10px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.placement-instructions p {
+    color: #a8dadc;
+    font-size: 0.95rem;
+}
+
+/* Game Area Styles */
+.game-area {
+}
+
+.game-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.player-name-display {
+    font-size: 1.2rem;
+    color: #2d6a4f;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.status {
+    font-size: 1.4rem;
+    color: #fff;
+    margin-bottom: 10px;
+    padding: 15px;
+    background: linear-gradient(145deg, rgba(233, 69, 96, 0.2), rgba(45, 106, 79, 0.2));
+    border: 2px solid #e94560;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.turn-indicator {
+    font-size: 1.2rem;
+    color: #a8dadc;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.controls {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.btn {
+    padding: 15px 35px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background: linear-gradient(145deg, #e94560, #d63850);
+    color: white;
+    border: 2px solid #e94560;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(145deg, #d63850, #c42d45);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(233, 69, 96, 0.4);
+}
+
+.btn-secondary {
+    background: linear-gradient(145deg, #457b9d, #3d6a8a);
+    color: white;
+    border: 2px solid #457b9d;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(145deg, #3d6a8a, #355d7a);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(69, 123, 157, 0.4);
+}
+
+.btn-sound {
+    background: linear-gradient(145deg, #2d6a4f, #1b4332);
+    color: white;
+    border: 2px solid #2d6a4f;
+}
+
+.btn-sound:hover {
+    background: linear-gradient(145deg, #1b4332, #153a28);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(45, 106, 79, 0.4);
+}
+
+.btn-autoplay {
+    background: linear-gradient(145deg, #9d4edd, #7b3db8);
+    color: white;
+    border: 2px solid #9d4edd;
+}
+
+.btn-autoplay:hover {
+    background: linear-gradient(145deg, #7b3db8, #5b2d98);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(157, 78, 221, 0.4);
+}
+
+.btn-autoplay.active {
+    background: linear-gradient(145deg, #e63946, #c62d36);
+    border-color: #e63946;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.7); }
+    50% { box-shadow: 0 0 0 10px rgba(230, 57, 70, 0); }
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.boards-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.board-wrapper {
+    flex: 1;
+    min-width: 350px;
+    max-width: 450px;
+}
+
+.board-wrapper h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #a8dadc;
+    font-size: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.board-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.board-with-coords {
+    display: flex;
+    align-items: center;
+}
+
+.coordinates {
+    display: flex;
+    font-weight: bold;
+    color: #a8dadc;
+    font-size: 1rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    letter-spacing: 1px;
+}
+
+.coordinates.letters {
+    margin-bottom: 8px;
+    margin-left: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.coordinates.letters span {
+    width: 38px;
+    text-align: center;
+    background: rgba(69, 123, 157, 0.2);
+    padding: 4px 0;
+    border-radius: 4px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    margin-right: 3px;
+}
+
+.coordinates.letters span:first-child {
+    width: 35px;
+    background: transparent;
+    margin-right: 0;
+}
+
+.coordinates.numbers {
+    flex-direction: column;
+    margin-right: 15px;
+}
+
+.coordinates.numbers span {
+    height: 38px;
+    width: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(69, 123, 157, 0.2);
+    padding: 0 8px;
+    border-radius: 4px;
+    margin: 1.5px 0;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(10, 38px);
+    gap: 3px;
+    background: linear-gradient(180deg, #4a90c2 0%, #2e5a8a 50%, #1a3a5c 100%);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 
+        0 15px 30px rgba(0, 0, 0, 0.5), 
+        inset 0 0 20px rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 10px solid;
+    border-image: linear-gradient(135deg, #a67c00 0%, #8b6914 25%, #6b4f12 50%, #8b6914 75%, #a67c00 100%) 1;
+}
+
+#enemyBoard.player-turn {
+    border-image: linear-gradient(135deg, #3d8a5f 0%, #2d6a4f 25%, #1d4a3f 50%, #2d6a4f 75%, #3d8a5f 100%) 1;
+    box-shadow: 
+        0 15px 30px rgba(0, 0, 0, 0.5), 
+        inset 0 0 20px rgba(255, 255, 255, 0.1),
+        0 0 20px rgba(45, 106, 79, 0.5);
+}
+
+#enemyBoard.enemy-turn {
+    border-image: linear-gradient(135deg, #f64956 0%, #e63946 25%, #c62d36 50%, #e63946 75%, #f64956 100%) 1;
+    box-shadow: 
+        0 15px 30px rgba(0, 0, 0, 0.5), 
+        inset 0 0 20px rgba(255, 255, 255, 0.1),
+        0 0 20px rgba(230, 57, 70, 0.5);
+}
+
+.board::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.2) 0%, transparent 50%),
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 10px,
+            rgba(255, 255, 255, 0.02) 10px,
+            rgba(255, 255, 255, 0.02) 20px
+        );
+    pointer-events: none;
+}
+
+.cell {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #5ba3d4 0%, #3d7aa8 50%, #2e5a8a 100%);
+    border: 1px solid #1a3a5c;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    border-radius: 2px;
+    box-shadow: 
+        inset 0 1px 3px rgba(255, 255, 255, 0.3),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.cell:hover {
+    background: linear-gradient(135deg, #7bbce8 0%, #5da0c8 50%, #4a90c2 100%);
+    transform: scale(1.05);
+    box-shadow: 
+        0 5px 15px rgba(0, 0, 0, 0.3),
+        inset 0 1px 3px rgba(255, 255, 255, 0.4);
+    z-index: 10;
+}
+
+.cell.ship {
+    background: linear-gradient(135deg, #4a7c59 0%, #3d6b4a 50%, #2e5a3c 100%);
+    border-color: #1a3a28;
+    box-shadow: 
+        inset 0 1px 3px rgba(255, 255, 255, 0.2),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.cell.ship::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.cell.ship.aircraft-carrier::before {
+    content: '✈️';
+    font-size: 22px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.cell.ship.battleship::before {
+    content: '🚢';
+    font-size: 22px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.cell.ship.cruiser::before {
+    content: '⛵';
+    font-size: 20px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.cell.ship.submarine::before {
+    content: '🛥️';
+    font-size: 20px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.cell.ship.destroyer::before {
+    content: '🛳️';
+    font-size: 20px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Override ship-specific icons when ship is sunk */
+.cell.ship.aircraft-carrier.ship-sunk::before,
+.cell.ship.battleship.ship-sunk::before,
+.cell.ship.cruiser.ship-sunk::before,
+.cell.ship.submarine.ship-sunk::before,
+.cell.ship.destroyer.ship-sunk::before {
+    content: '💀' !important;
+    font-size: 26px;
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 25px rgba(255, 255, 255, 0.4);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.cell.ship-sunk::before {
+    content: '💀' !important;
+    font-size: 26px;
+    color: #fff;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 25px rgba(255, 255, 255, 0.4);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+/* Override ship-specific icons when ship is sunk */
+.cell.ship.aircraft-carrier.ship-sunk::before,
+.cell.ship.battleship.ship-sunk::before,
+.cell.ship.cruiser.ship-sunk::before,
+.cell.ship.submarine.ship-sunk::before,
+.cell.ship.destroyer.ship-sunk::before {
+    content: '💀' !important;
+    font-size: 24px;
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Board-specific overrides for skull icon */
+#playerBoard .cell.ship-sunk::before,
+#enemyBoard .cell.ship-sunk::before {
+    content: '💀' !important;
+    font-size: 26px;
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 25px rgba(255, 255, 255, 0.4);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+#playerBoard .cell.ship.ship-sunk::before,
+#enemyBoard .cell.ship.ship-sunk::before {
+    content: '💀' !important;
+    font-size: 26px;
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 25px rgba(255, 255, 255, 0.4);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.cell.hit {
+    background: linear-gradient(135deg, #ff6b6b 0%, #e63946 50%, #c62d36 100%);
+    border-color: #9d0208;
+    animation: hitPulse 0.5s ease;
+    box-shadow: 
+        0 0 20px rgba(230, 57, 70, 0.6),
+        inset 0 1px 3px rgba(255, 255, 255, 0.3),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes hitPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+.cell.miss {
+    background: linear-gradient(135deg, #d0d7de 0%, #adb5bd 50%, #9da5ad 100%);
+    border-color: #6c757d;
+    animation: missRipple 0.5s ease;
+    box-shadow: 
+        inset 0 1px 3px rgba(255, 255, 255, 0.5),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes missRipple {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.cell.ship-sunk {
+    background: linear-gradient(135deg, #8b4513 0%, #6b3510 50%, #4a250d 100%);
+    border-color: #2a1505;
+    animation: sink 1s ease;
+    box-shadow: 
+        inset 0 1px 3px rgba(255, 255, 255, 0.2),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.4),
+        0 0 15px rgba(139, 69, 19, 0.5);
+}
+
+#enemyBoard .cell.ship.ship-sunk {
+    background: linear-gradient(145deg, #2d6a4f, #1d5a3f);
+    border-color: #1b4332;
+}
+
+@keyframes sink {
+    0% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(10px) rotate(5deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+}
+
+.cell.preview {
+    background: linear-gradient(145deg, #ffd60a, #e5c600);
+    border-color: #b8a000;
+    opacity: 0.7;
+}
+
+.cell.invalid {
+    background: linear-gradient(145deg, #e63946, #c62d36);
+    border-color: #9d0208;
+    opacity: 0.5;
+}
+
+.cell.hit::after {
+    content: '💥';
+    animation: explode 0.5s ease;
+}
+
+.cell.hit.ship-sunk::after,
+.cell.ship-sunk.hit::after,
+.cell.ship-sunk::after {
+    content: none !important;
+}
+
+@keyframes explode {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.5); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.cell.miss::after {
+    content: '•';
+    color: #495057;
+    font-size: 24px;
+}
+
+.cell.ship-sunk::after {
+    content: none !important;
+}
+
+.cell.ship-sunk::before {
+    content: '💀' !important;
+    position: absolute;
+    font-size: 26px;
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 25px rgba(255, 255, 255, 0.4);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.cell.hit.ship-sunk::after {
+    content: none !important;
+}
+
+.cell.hit.ship-sunk::before {
+    content: '💀' !important;
+    position: absolute;
+    font-size: 26px;
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 25px rgba(255, 255, 255, 0.4);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.cell.hit-ship-sunk::after {
+    content: none !important;
+}
+
+.cell.hit-ship-sunk::before {
+    content: '💀' !important;
+    position: absolute;
+    font-size: 26px;
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 25px rgba(255, 255, 255, 0.4);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+/* Force skull display on all sunk ships regardless of other classes */
+.cell.ship-sunk.hit::after {
+    display: none;
+}
+
+.cell.ship-sunk.hit::before {
+    content: '💀';
+    position: absolute;
+    font-size: 24px;
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+#enemyBoard .cell.ship.ship-sunk::after {
+    content: none !important;
+}
+
+#enemyBoard .cell.ship.ship-sunk::before {
+    content: '💀' !important;
+    position: absolute;
+    font-size: 24px;
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+#playerBoard .cell.ship-sunk::before {
+    content: '💀' !important;
+    position: absolute;
+    font-size: 26px;
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 25px rgba(255, 255, 255, 0.4);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+#playerBoard .cell.ship-sunk::after {
+    content: none !important;
+}
+
+@keyframes skull {
+    0% { transform: scale(0) rotate(-180deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+#enemyBoard .cell.ship {
+    background: linear-gradient(145deg, #457b9d, #356b8d);
+    border-color: #1d3557;
+}
+
+#enemyBoard .cell.ship.revealed {
+    background: linear-gradient(145deg, #2d6a4f, #1d5a3f);
+    border-color: #1b4332;
+}
+
+#enemyBoard .cell.ship.ship-sunk::before {
+    content: '💀' !important;
+    position: absolute;
+    font-size: 26px;
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 25px rgba(255, 255, 255, 0.4);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+#enemyBoard .cell.ship.ship-sunk::after {
+    content: none !important;
+}
+
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+    font-size: 0.95rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.legend .cell {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+}
+
+.ship-info {
+    text-align: center;
+    margin-bottom: 30px;
+    background: linear-gradient(145deg, rgba(45, 106, 79, 0.2), rgba(29, 53, 87, 0.2));
+    padding: 25px;
+    border-radius: 15px;
+    border: 2px solid #2d6a4f;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.warship-status {
+    text-align: center;
+    margin-bottom: 30px;
+    background: linear-gradient(145deg, rgba(233, 69, 96, 0.1), rgba(29, 53, 87, 0.2));
+    padding: 25px;
+    border-radius: 15px;
+    border: 2px solid #e94560;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.warship-status h3 {
+    color: #a8dadc;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.status-columns {
+    display: flex;
+    justify-content: space-around;
+    gap: 30px;
+}
+
+.status-column {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.status-column h4 {
+    color: #e94560;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    border-bottom: 2px solid #e94560;
+    padding-bottom: 10px;
+}
+
+.ship-status-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    background: rgba(45, 123, 157, 0.1);
+    border-radius: 6px;
+    border-left: 3px solid #457b9d;
+    gap: 10px;
+}
+
+.ship-status-item.sunk {
+    background: rgba(233, 69, 96, 0.15);
+    border-left-color: #e94560;
+}
+
+.ship-status-item.sunk .ship-name {
+    text-decoration: line-through;
+    color: #e94560;
+}
+
+.ship-name {
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.9rem;
+    flex: 1;
+}
+
+.ship-icon {
+    font-size: 1.2rem;
+}
+
+.ship-status {
+    font-size: 0.85rem;
+    color: #a8dadc;
+    min-width: 80px;
+    text-align: right;
+}
+
+.ship-status.sunk {
+    color: #e94560;
+    font-weight: bold;
+}
+
+.ship-info h3 {
+    color: #a8dadc;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.ship-info ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+}
+
+.ship-info li {
+    color: #fff;
+    font-weight: bold;
+    background: rgba(233, 69, 96, 0.1);
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(233, 69, 96, 0.3);
+}
+
+.message-log {
+    background: linear-gradient(145deg, rgba(29, 53, 87, 0.3), rgba(45, 106, 79, 0.3));
+    padding: 25px;
+    border-radius: 15px;
+    border: 2px solid #457b9d;
+    max-height: 250px;
+    overflow-y: auto;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.message-log h3 {
+    color: #a8dadc;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+#logContent {
+    font-size: 0.95rem;
+    line-height: 1.8;
+}
+
+.log-entry {
+    margin-bottom: 12px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border-left: 4px solid #e94560;
+    background: rgba(233, 69, 96, 0.1);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.log-entry.player {
+    border-left-color: #2d6a4f;
+    background: rgba(45, 106, 79, 0.15);
+}
+
+.log-entry.enemy {
+    border-left-color: #e63946;
+    background: rgba(230, 57, 70, 0.15);
+}
+
+.log-entry.win {
+    border-left-color: #ffd60a;
+    background: linear-gradient(145deg, rgba(255, 214, 10, 0.2), rgba(255, 180, 0, 0.1));
+    font-weight: bold;
+    font-size: 1.1rem;
+    box-shadow: 0 0 15px rgba(255, 214, 10, 0.3);
+}
+
+.log-entry .timestamp {
+    color: #a8dadc;
+    font-size: 0.8rem;
+    margin-right: 10px;
+}
+
+.log-entry .icon {
+    margin-right: 8px;
+}
+
+/* Custom Scrollbar */
+.message-log::-webkit-scrollbar {
+    width: 8px;
+}
+
+.message-log::-webkit-scrollbar-track {
+    background: rgba(29, 53, 87, 0.3);
+    border-radius: 4px;
+}
+
+.message-log::-webkit-scrollbar-thumb {
+    background: #457b9d;
+    border-radius: 4px;
+}
+
+.message-log::-webkit-scrollbar-thumb:hover {
+    background: #5a8cb0;
+}
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2.5rem;
+    }
+
+    .boards-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .cell {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+
+    .ship-info ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .status-columns {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .coordinates.letters {
+        margin-left: 8px;
+    }
+
+    .coordinates.letters span {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
+
+    .coordinates.letters span:first-child {
+        width: 30px;
+    }
+
+    .coordinates.numbers span {
+        height: 32px;
+        font-size: 0.8rem;
+    }
+
+    .board {
+        grid-template-columns: repeat(10, 32px);
+    }
+
+    .setup-panel {
+        padding: 25px;
+    }
+
+    .placement-options {
+        flex-direction: column;
+    }
+}

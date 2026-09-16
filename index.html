@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battleship Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="scene">
+        <div class="container">
+            <header>
+                <h1>⚓ Battleship ⚓</h1>
+                <p class="subtitle">Sink the enemy fleet before they sink the commander's fleet!</p>
+            </header>
+
+            <div class="player-setup" id="playerSetup">
+                <div class="setup-panel">
+                    <h2>⚡ Admiral's Setup ⚡</h2>
+                    <div class="form-group">
+                        <label for="playerName">Admiral's Name:</label>
+                        <input type="text" id="playerName" placeholder="Enter admiral name" maxlength="20">
+                    </div>
+                    <div class="form-group">
+                        <label>Ship Placement:</label>
+                        <div class="placement-options">
+                            <label class="radio-option">
+                                <input type="radio" name="placement" value="random" checked>
+                                <span>Random Placement</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="placement" value="manual">
+                                <span>Manual Placement</span>
+                            </label>
+                        </div>
+                    </div>
+                    <button id="startGameBtn" class="btn btn-primary">⚔️ Start Battle</button>
+                </div>
+            </div>
+
+            <div class="game-area" id="gameArea" style="display: none;">
+                <div class="game-info">
+                    <div class="player-name-display" id="playerNameDisplay"></div>
+                    <div class="status" id="gameStatus">Battle in progress!</div>
+                    <div class="turn-indicator" id="turnIndicator"></div>
+                </div>
+
+                <div class="controls">
+                    <button id="resetBtn" class="btn btn-secondary">🔄 Reset Game</button>
+                    <button id="autoPlayBtn" class="btn btn-autoplay">🤖 Auto Play</button>
+                    <button id="soundToggle" class="btn btn-sound">🔊 Sound On</button>
+                </div>
+
+                <div class="boards-container">
+                    <div class="board-wrapper">
+                        <h2 id="playerFleetTitle">Your Fleet</h2>
+                        <div class="board-container">
+                            <div class="coordinates letters">
+                                <span></span>
+                                <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                                <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+                            </div>
+                            <div class="board-with-coords">
+                                <div class="coordinates numbers">
+                                    <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span>
+                                    <span>F</span><span>G</span><span>H</span><span>I</span><span>J</span>
+                                </div>
+                                <div class="board" id="playerBoard"></div>
+                            </div>
+                        </div>
+                        <div class="legend">
+                            <span class="legend-item"><span class="cell ship"></span> Your Ship</span>
+                            <span class="legend-item"><span class="cell hit"></span> Hit</span>
+                            <span class="legend-item"><span class="cell miss"></span> Miss</span>
+                        </div>
+                    </div>
+
+                    <div class="board-wrapper">
+                        <h2>Enemy Waters</h2>
+                        <div class="board-container">
+                            <div class="coordinates letters">
+                                <span></span>
+                                <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                                <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+                            </div>
+                            <div class="board-with-coords">
+                                <div class="coordinates numbers">
+                                    <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span>
+                                    <span>F</span><span>G</span><span>H</span><span>I</span><span>J</span>
+                                </div>
+                                <div class="board" id="enemyBoard"></div>
+                            </div>
+                        </div>
+                        <div class="legend">
+                            <span class="legend-item"><span class="cell hit"></span> Hit</span>
+                            <span class="legend-item"><span class="cell miss"></span> Miss</span>
+                            <span class="legend-item"><span class="cell ship-sunk"></span> Sunk</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ship-info">
+                    <h3>Warships to Sink:</h3>
+                    <ul>
+                        <li>USS Nimitz (Aircraft Carrier - 5 cells)</li>
+                        <li>USS Iowa (Battleship - 4 cells)</li>
+                        <li>USS Ticonderoga (Cruiser - 3 cells)</li>
+                        <li>USS Virginia (Submarine - 3 cells)</li>
+                        <li>USS Arleigh Burke (Destroyer - 2 cells)</li>
+                    </ul>
+                </div>
+
+                <div class="warship-status">
+                    <h3>🚢 Warship Status</h3>
+                    <div class="status-columns">
+                        <div class="status-column">
+                            <h4>My Fleet</h4>
+                            <div id="playerShipStatus"></div>
+                        </div>
+                        <div class="status-column">
+                            <h4>Enemy Fleet</h4>
+                            <div id="enemyShipStatus"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="message-log" id="messageLog">
+                    <h3>📜 Battle Log:</h3>
+                    <div id="logContent"></div>
+                </div>
+            </div>
+
+            <div class="manual-placement" id="manualPlacement" style="display: none;">
+                <div class="placement-header">
+                    <h2>⚓ Manual Ship Placement ⚓</h2>
+                    <p id="currentShipPlacement">Place: USS Nimitz (5 cells)</p>
+                </div>
+                <div class="placement-controls">
+                    <button id="rotateBtn" class="btn btn-secondary">🔄 Rotate Ship</button>
+                    <button id="autoPlaceBtn" class="btn btn-primary">⚡ Auto Place All</button>
+                </div>
+                <div class="placement-board">
+                    <div class="board-container">
+                        <div class="coordinates letters">
+                            <span></span>
+                            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                            <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+                        </div>
+                        <div class="board-with-coords">
+                            <div class="coordinates numbers">
+                                <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span>
+                                <span>F</span><span>G</span><span>H</span><span>I</span><span>J</span>
+                            </div>
+                            <div class="board" id="placementBoard"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="placement-instructions">
+                    <p>Click on the board to place your ship. Use "Rotate" to change orientation.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
