@@ -12,147 +12,188 @@ class SoundManager {
         }
     }
 
+    createNoiseBuffer(duration, decay = 1) {
+        const length = Math.floor(this.audioContext.sampleRate * duration);
+        const buffer = this.audioContext.createBuffer(1, length, this.audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+
+        for (let i = 0; i < length; i++) {
+            const envelope = Math.pow(1 - i / length, decay);
+            data[i] = (Math.random() * 2 - 1) * envelope;
+        }
+
+        return buffer;
+    }
+
     playHit() {
         if (!this.soundEnabled || !this.audioContext) return;
-        
+
         const now = this.audioContext.currentTime;
-        
-        // Explosion sound using layered noise
-        const bufferSize = this.audioContext.sampleRate * 0.6;
-        const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
-        const data = buffer.getChannelData(0);
-        
-        for (let i = 0; i < bufferSize; i++) {
-            data[i] = Math.random() * 2 - 1;
-        }
-        
-        const noise = this.audioContext.createBufferSource();
-        noise.buffer = buffer;
-        
-        // Lowpass filter for explosion
-        const filter = this.audioContext.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(800, now);
-        filter.frequency.exponentialRampToValueAtTime(80, now + 0.5);
-        
-        const gain = this.audioContext.createGain();
-        gain.gain.setValueAtTime(0.5, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
-        
-        noise.connect(filter);
-        filter.connect(gain);
-        gain.connect(this.audioContext.destination);
-        
-        noise.start(now);
-        noise.stop(now + 0.5);
-        
-        // Add impact boom
-        const oscillator = this.audioContext.createOscillator();
-        const oscGain = this.audioContext.createGain();
-        
-        oscillator.type = 'sawtooth';
-        oscillator.frequency.setValueAtTime(60, now);
-        oscillator.frequency.exponentialRampToValueAtTime(20, now + 0.4);
-        
-        oscGain.gain.setValueAtTime(0.4, now);
-        oscGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-        
-        oscillator.connect(oscGain);
-        oscGain.connect(this.audioContext.destination);
-        
-        oscillator.start(now);
-        oscillator.stop(now + 0.4);
-        
-        // Add rumble
-        const rumble = this.audioContext.createOscillator();
-        const rumbleGain = this.audioContext.createGain();
-        
-        rumble.type = 'sine';
-        rumble.frequency.setValueAtTime(40, now);
-        rumble.frequency.exponentialRampToValueAtTime(15, now + 0.6);
-        
-        rumbleGain.gain.setValueAtTime(0.3, now);
-        rumbleGain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
-        
-        rumble.connect(rumbleGain);
-        rumbleGain.connect(this.audioContext.destination);
-        
-        rumble.start(now);
-        rumble.stop(now + 0.6);
+
+        // Sharp detonation crack
+        const crack = this.audioContext.createBufferSource();
+        crack.buffer = this.createNoiseBuffer(0.12, 6);
+        const crackFilter = this.audioContext.createBiquadFilter();
+        crackFilter.type = 'highpass';
+        crackFilter.frequency.setValueAtTime(1800, now);
+        const crackGain = this.audioContext.createGain();
+        crackGain.gain.setValueAtTime(0.6, now);
+        crackGain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+        crack.connect(crackFilter);
+        crackFilter.connect(crackGain);
+        crackGain.connect(this.audioContext.destination);
+        crack.start(now);
+        crack.stop(now + 0.12);
+
+        // Body of the blast, swept from bright to muffled
+        const blast = this.audioContext.createBufferSource();
+        blast.buffer = this.createNoiseBuffer(1.1, 2.2);
+        const blastFilter = this.audioContext.createBiquadFilter();
+        blastFilter.type = 'lowpass';
+        blastFilter.frequency.setValueAtTime(2400, now);
+        blastFilter.frequency.exponentialRampToValueAtTime(120, now + 0.7);
+        const blastGain = this.audioContext.createGain();
+        blastGain.gain.setValueAtTime(0.0001, now);
+        blastGain.gain.exponentialRampToValueAtTime(0.7, now + 0.015);
+        blastGain.gain.exponentialRampToValueAtTime(0.01, now + 1.0);
+        blast.connect(blastFilter);
+        blastFilter.connect(blastGain);
+        blastGain.connect(this.audioContext.destination);
+        blast.start(now);
+        blast.stop(now + 1.1);
+
+        // Sub-bass thump
+        const sub = this.audioContext.createOscillator();
+        const subGain = this.audioContext.createGain();
+        sub.type = 'sine';
+        sub.frequency.setValueAtTime(110, now);
+        sub.frequency.exponentialRampToValueAtTime(28, now + 0.35);
+        subGain.gain.setValueAtTime(0.0001, now);
+        subGain.gain.exponentialRampToValueAtTime(0.8, now + 0.02);
+        subGain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+        sub.connect(subGain);
+        subGain.connect(this.audioContext.destination);
+        sub.start(now);
+        sub.stop(now + 0.85);
+
+        // Debris rumble tail
+        const tail = this.audioContext.createBufferSource();
+        tail.buffer = this.createNoiseBuffer(1.6, 1.2);
+        const tailFilter = this.audioContext.createBiquadFilter();
+        tailFilter.type = 'lowpass';
+        tailFilter.frequency.setValueAtTime(220, now);
+        const tailGain = this.audioContext.createGain();
+        tailGain.gain.setValueAtTime(0.3, now + 0.08);
+        tailGain.gain.exponentialRampToValueAtTime(0.01, now + 1.5);
+        tail.connect(tailFilter);
+        tailFilter.connect(tailGain);
+        tailGain.connect(this.audioContext.destination);
+        tail.start(now + 0.08);
+        tail.stop(now + 1.6);
     }
 
     playMiss() {
         if (!this.soundEnabled || !this.audioContext) return;
-        
+
         const now = this.audioContext.currentTime;
-        
-        // Water splash using filtered noise
-        const bufferSize = this.audioContext.sampleRate * 0.4;
-        const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
-        const data = buffer.getChannelData(0);
-        
-        for (let i = 0; i < bufferSize; i++) {
-            data[i] = Math.random() * 2 - 1;
-        }
-        
-        const noise = this.audioContext.createBufferSource();
-        noise.buffer = buffer;
-        
-        // Bandpass filter for water sound
-        const filter = this.audioContext.createBiquadFilter();
-        filter.type = 'bandpass';
-        filter.frequency.setValueAtTime(1500, now);
-        filter.frequency.exponentialRampToValueAtTime(500, now + 0.3);
-        filter.Q.setValueAtTime(2, now);
-        
-        const gain = this.audioContext.createGain();
-        gain.gain.setValueAtTime(0.25, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-        
-        noise.connect(filter);
-        filter.connect(gain);
-        gain.connect(this.audioContext.destination);
-        
-        noise.start(now);
-        noise.stop(now + 0.4);
-        
-        // Add bubble sounds
-        const bubbleCount = 7;
-        for (let i = 0; i < bubbleCount; i++) {
-            const bubbleTime = now + Math.random() * 0.25;
+
+        // Shell breaking the surface
+        const splash = this.audioContext.createBufferSource();
+        splash.buffer = this.createNoiseBuffer(0.35, 3.5);
+        const splashFilter = this.audioContext.createBiquadFilter();
+        splashFilter.type = 'bandpass';
+        splashFilter.frequency.setValueAtTime(2600, now);
+        splashFilter.frequency.exponentialRampToValueAtTime(700, now + 0.3);
+        splashFilter.Q.setValueAtTime(0.8, now);
+        const splashGain = this.audioContext.createGain();
+        splashGain.gain.setValueAtTime(0.0001, now);
+        splashGain.gain.exponentialRampToValueAtTime(0.5, now + 0.012);
+        splashGain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+        splash.connect(splashFilter);
+        splashFilter.connect(splashGain);
+        splashGain.connect(this.audioContext.destination);
+        splash.start(now);
+        splash.stop(now + 0.35);
+
+        // Low gulp of displaced water
+        const gulp = this.audioContext.createOscillator();
+        const gulpGain = this.audioContext.createGain();
+        gulp.type = 'sine';
+        gulp.frequency.setValueAtTime(220, now);
+        gulp.frequency.exponentialRampToValueAtTime(70, now + 0.22);
+        gulpGain.gain.setValueAtTime(0.0001, now);
+        gulpGain.gain.exponentialRampToValueAtTime(0.22, now + 0.03);
+        gulpGain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        gulp.connect(gulpGain);
+        gulpGain.connect(this.audioContext.destination);
+        gulp.start(now);
+        gulp.stop(now + 0.3);
+
+        // Spray falling back down
+        const spray = this.audioContext.createBufferSource();
+        spray.buffer = this.createNoiseBuffer(0.8, 1.6);
+        const sprayFilter = this.audioContext.createBiquadFilter();
+        sprayFilter.type = 'highpass';
+        sprayFilter.frequency.setValueAtTime(2200, now);
+        const sprayGain = this.audioContext.createGain();
+        sprayGain.gain.setValueAtTime(0.0001, now + 0.1);
+        sprayGain.gain.exponentialRampToValueAtTime(0.13, now + 0.2);
+        sprayGain.gain.exponentialRampToValueAtTime(0.01, now + 0.85);
+        spray.connect(sprayFilter);
+        sprayFilter.connect(sprayGain);
+        sprayGain.connect(this.audioContext.destination);
+        spray.start(now + 0.1);
+        spray.stop(now + 0.9);
+
+        // Bubbles surfacing
+        for (let i = 0; i < 3; i++) {
+            const bubbleTime = now + 0.18 + Math.random() * 0.35;
             const bubble = this.audioContext.createOscillator();
             const bubbleGain = this.audioContext.createGain();
-            
             bubble.type = 'sine';
-            bubble.frequency.setValueAtTime(1000 + Math.random() * 600, bubbleTime);
-            bubble.frequency.exponentialRampToValueAtTime(300, bubbleTime + 0.12);
-            
-            bubbleGain.gain.setValueAtTime(0.06, bubbleTime);
-            bubbleGain.gain.exponentialRampToValueAtTime(0.01, bubbleTime + 0.12);
-            
+            bubble.frequency.setValueAtTime(320 + Math.random() * 280, bubbleTime);
+            bubble.frequency.exponentialRampToValueAtTime(900, bubbleTime + 0.09);
+            bubbleGain.gain.setValueAtTime(0.05, bubbleTime);
+            bubbleGain.gain.exponentialRampToValueAtTime(0.01, bubbleTime + 0.1);
             bubble.connect(bubbleGain);
             bubbleGain.connect(this.audioContext.destination);
-            
             bubble.start(bubbleTime);
-            bubble.stop(bubbleTime + 0.12);
+            bubble.stop(bubbleTime + 0.1);
         }
-        
-        // Add water drop sound
-        const drop = this.audioContext.createOscillator();
-        const dropGain = this.audioContext.createGain();
-        
-        drop.type = 'sine';
-        drop.frequency.setValueAtTime(600, now + 0.1);
-        drop.frequency.exponentialRampToValueAtTime(200, now + 0.25);
-        
-        dropGain.gain.setValueAtTime(0.08, now + 0.1);
-        dropGain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-        
-        drop.connect(dropGain);
-        dropGain.connect(this.audioContext.destination);
-        
-        drop.start(now + 0.1);
-        drop.stop(now + 0.25);
+    }
+
+    playFirework() {
+        if (!this.soundEnabled || !this.audioContext) return;
+
+        const now = this.audioContext.currentTime;
+
+        const whistle = this.audioContext.createOscillator();
+        const whistleGain = this.audioContext.createGain();
+        whistle.type = 'sine';
+        whistle.frequency.setValueAtTime(700, now);
+        whistle.frequency.exponentialRampToValueAtTime(1900, now + 0.25);
+        whistleGain.gain.setValueAtTime(0.07, now);
+        whistleGain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+        whistle.connect(whistleGain);
+        whistleGain.connect(this.audioContext.destination);
+        whistle.start(now);
+        whistle.stop(now + 0.28);
+
+        const burst = this.audioContext.createBufferSource();
+        burst.buffer = this.createNoiseBuffer(0.7, 2.5);
+        const burstFilter = this.audioContext.createBiquadFilter();
+        burstFilter.type = 'bandpass';
+        burstFilter.frequency.setValueAtTime(1200, now + 0.28);
+        burstFilter.Q.setValueAtTime(0.6, now + 0.28);
+        const burstGain = this.audioContext.createGain();
+        burstGain.gain.setValueAtTime(0.0001, now + 0.28);
+        burstGain.gain.exponentialRampToValueAtTime(0.35, now + 0.3);
+        burstGain.gain.exponentialRampToValueAtTime(0.01, now + 0.95);
+        burst.connect(burstFilter);
+        burstFilter.connect(burstGain);
+        burstGain.connect(this.audioContext.destination);
+        burst.start(now + 0.28);
+        burst.stop(now + 1.0);
     }
 
     playSink() {
@@ -256,6 +297,7 @@ class BattleshipGame {
         this.aiHuntDirection = null;
 
         this.soundManager = new SoundManager();
+        this.fireworksInterval = null;
         this.autoPlayActive = false;
         this.autoPlayInterval = null;
 
@@ -284,6 +326,12 @@ class BattleshipGame {
         this.currentShipPlacement = document.getElementById('currentShipPlacement');
         this.rotateBtn = document.getElementById('rotateBtn');
         this.autoPlaceBtn = document.getElementById('autoPlaceBtn');
+        this.endgameOverlay = document.getElementById('endgameOverlay');
+        this.endgameEffects = document.getElementById('endgameEffects');
+        this.endgameIcon = document.getElementById('endgameIcon');
+        this.endgameTitle = document.getElementById('endgameTitle');
+        this.endgameMessage = document.getElementById('endgameMessage');
+        this.endgameCloseBtn = document.getElementById('endgameCloseBtn');
 
         this.startGameBtn.addEventListener('click', () => this.handleStartGame());
         this.playerNameInput.addEventListener('keydown', (e) => {
@@ -293,6 +341,7 @@ class BattleshipGame {
             }
         });
         this.resetBtn.addEventListener('click', () => this.resetGame());
+        this.endgameCloseBtn.addEventListener('click', () => this.hideEndgameOverlay());
         this.autoPlayBtn.addEventListener('click', () => this.toggleAutoPlay());
         this.soundToggle.addEventListener('click', () => this.toggleSound());
         this.rotateBtn.addEventListener('click', () => this.toggleRotation());
@@ -650,6 +699,7 @@ class BattleshipGame {
             }
         }
         
+        this.hideEndgameOverlay();
         this.initializeBoards();
         this.updateBoards();
         
@@ -1012,6 +1062,93 @@ class BattleshipGame {
         }
 
         this.turnIndicator.textContent = 'Game Over';
+        this.showEndgameOverlay(playerWon);
+    }
+
+    showEndgameOverlay(playerWon) {
+        this.endgameEffects.innerHTML = '';
+        this.endgameOverlay.classList.toggle('victory', playerWon);
+        this.endgameOverlay.classList.toggle('defeat', !playerWon);
+        this.endgameIcon.textContent = playerWon ? '🎆' : '🌧️';
+        this.endgameTitle.textContent = playerWon ? 'Victory!' : 'Defeat';
+        this.endgameMessage.textContent = playerWon
+            ? `${this.playerName} sent the entire enemy fleet to the bottom.`
+            : `${this.playerName}'s fleet lies in ruins beneath the waves.`;
+        this.endgameOverlay.hidden = false;
+
+        if (playerWon) {
+            this.startFireworks();
+        } else {
+            this.buildDefeatScene();
+        }
+    }
+
+    hideEndgameOverlay() {
+        this.stopFireworks();
+        this.endgameEffects.innerHTML = '';
+        this.endgameOverlay.hidden = true;
+        this.endgameOverlay.classList.remove('victory', 'defeat');
+    }
+
+    startFireworks() {
+        this.stopFireworks();
+        const launch = () => this.launchFirework();
+        launch();
+        this.fireworksInterval = setInterval(launch, 600);
+    }
+
+    stopFireworks() {
+        if (this.fireworksInterval) {
+            clearInterval(this.fireworksInterval);
+            this.fireworksInterval = null;
+        }
+    }
+
+    launchFirework() {
+        const colors = ['#ffd970', '#ff6b9d', '#6bdcff', '#9dff6b', '#ffffff', '#ff9a4d'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const originX = 15 + Math.random() * 70;
+        const originY = 15 + Math.random() * 45;
+        const particleCount = 26;
+        const radius = 90 + Math.random() * 70;
+
+        for (let i = 0; i < particleCount; i++) {
+            const angle = (Math.PI * 2 * i) / particleCount;
+            const spread = radius * (0.7 + Math.random() * 0.5);
+            const particle = document.createElement('div');
+            particle.className = 'firework';
+            particle.style.color = color;
+            particle.style.left = `${originX}%`;
+            particle.style.top = `${originY}%`;
+            particle.style.setProperty('--dx', `${Math.cos(angle) * spread}px`);
+            particle.style.setProperty('--dy', `${Math.sin(angle) * spread}px`);
+            particle.addEventListener('animationend', () => particle.remove());
+            this.endgameEffects.appendChild(particle);
+        }
+
+        this.soundManager.playFirework();
+    }
+
+    buildDefeatScene() {
+        for (let i = 0; i < 60; i++) {
+            const drop = document.createElement('div');
+            drop.className = 'raindrop';
+            drop.style.left = `${Math.random() * 100}%`;
+            drop.style.animationDuration = `${0.5 + Math.random() * 0.6}s`;
+            drop.style.animationDelay = `${Math.random() * 1.5}s`;
+            this.endgameEffects.appendChild(drop);
+        }
+
+        const debrisIcons = ['🚢', '⚓', '💀', '🛟'];
+        for (let i = 0; i < 8; i++) {
+            const debris = document.createElement('div');
+            debris.className = 'debris';
+            debris.textContent = debrisIcons[i % debrisIcons.length];
+            debris.style.left = `${5 + Math.random() * 90}%`;
+            debris.style.animationDuration = `${5 + Math.random() * 4}s`;
+            debris.style.animationDelay = `${Math.random() * 4}s`;
+            this.endgameEffects.appendChild(debris);
+        }
     }
 
     addLogEntry(message, type) {
