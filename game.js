@@ -1144,7 +1144,13 @@ class BattleshipGame {
     startFireworks() {
         this.stopFireworks();
         this.launchFirework(true);
+        if (this.prefersReducedMotion()) return;
         this.fireworksInterval = setInterval(() => this.launchFirework(false), 600);
+    }
+
+    prefersReducedMotion() {
+        return typeof window.matchMedia === 'function'
+            && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     }
 
     stopFireworks() {
@@ -1173,6 +1179,7 @@ class BattleshipGame {
             particle.style.setProperty('--dx', `${Math.cos(angle) * spread}px`);
             particle.style.setProperty('--dy', `${Math.sin(angle) * spread}px`);
             particle.addEventListener('animationend', () => particle.remove());
+            setTimeout(() => particle.remove(), 1500);
             this.endgameEffects.appendChild(particle);
         }
 
